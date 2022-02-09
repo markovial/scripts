@@ -1,0 +1,114 @@
+PRE-DEFINED PATTERNS
+---------------------
+
+\d    : match any digit
+\D    : match any non-digit
+\s    : match any whitespace (\r\n\t\f)
+\S    : match any non-whitespace
+\w    : match any word (a-z , A-Z , 0-9 , _)
+\W    : match any non-word
+
+COUNTING
+---------
+
+{m}   : match preceding character / pattern m times exactly
+{m,}  : match preceding character / pattern m or more times
+{m,n} : match preceding character / pattern m to n times
+*     : Zero or more repitions
++     : One or more repetitions
+?     : match as few as possible
+
+
+SELF-DEFINED PATTERNS
+---------------------
+
+[]    : match any one of the characters inside [] exactly one time
+[^]   : match any one of the characters not inside [] exactly one time
+[0-9] : match all digits
+[a-z] : match all lowercase english characters
+[A-Z] : match all uppercase english characters
+
+ANCHORS
+-------
+
+^     : match pattern at start of string
+$     : match pattern at end of string
+
+^123 = 123456 (true)
+^456 = 123456 (false)
+124$ = 123456 (false)
+456$ = 123456 (true)
+
+
+GROUPS
+-------
+
+(abc)   : Captures the text inside the () in a group , that can be matched later
+\1      : The 1st , (or nth if \n) captured group from patterns inside ()
+(a|bc)  : Matches either a , or bc
+(a(bc)) :
+(.*)    :
+(abc?)  : ? indicates that the word inside is optional , which means that \1 can
+          successfully match with either a blank character OR abc
+
+(abc)? : indicates that not just the word inside the group , but the entire group
+         is optional , which means that \1 will throw an error because it might be a
+         reference to nothing
+
+(?|(regex1)|(regex2)) : A group composed of groups , that picks and stores only
+                        1 matched pattern , useful for stuff like 1-2-3-4 , 1.2.3.4 , 1--2--3--4 ,
+                        1:2:3:4 , cause we figure out the which seperator is being used and consistently
+                        check for that seperator type
+
+r1(?=r2)  : The positive lookahead (?=) asserts regex_1 to be immediately followed by regex_2
+r1(?!r2)  : The negative lookahead (?!) asserts regex_1 not to be immediately followed by regex_2.
+(?<=r2)r1 : The positive lookbehind (?<=) asserts regex_1 to be immediately preceded by regex_2
+(?<!r2)r1 : The negative lookbehind (?<!) asserts regex_1 not to be immediately preceded by regex_2. 
+
+
+Branch reset group is supported by Perl, PHP, Delphi and R.
+
+A branch reset group consists of alternations and capturing groups. (?|(regex1)|(regex2))
+
+
+BOUNDARIES
+----------
+
+\b : matches positions wher one side is a word character (letter, dif
+, underscore) and the other side is not a word character.
+
+\bcat
+Match     : catfish
+Not Match :
+
+cat\b
+Match     : tomcat
+Not Match :
+
+\bcat\b
+Match     : black cat
+Not Match : catatonic , tomcat , certificate , _cat , cat25
+
+
+\B : matches not a word boundaries
+
+
+\Bcat
+Match     : certificate , tomcate
+Not Match : catfish , cat
+
+cat\B
+Match     : certificate , catfish
+Not Match : cat , tomcat
+
+\Bcat\B
+Match     : certificate
+Not Match :
+
+
+
+ASSERTIONS
+----------
+
+
+
