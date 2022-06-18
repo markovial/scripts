@@ -13,13 +13,14 @@ A = np.ndarray(shape=(2,2))     # N-Dim Array (shape=tuple,buffer=init_vals)
 A = np.array([[1, 2], [3, 4]]); #
 B = np.ones(( 2,2 ))*10;        #
 
-A.ndim   # Num of rows , int
-A.shape  # Num of rows and cols , tuple
-A.dtype  # type of elements
-A.sum()  # Sum of all elements
-A.max()  # Max of all elements
-A.min()  # Min of all elements
-A.mean() # Mean of all elements
+A.ndim        # Num of rows , int
+A.shape       # Num of rows and cols , tuple
+A.dtype       # type of elements
+A.sum()       # Sum of all elements
+A.max()       # Max of all elements
+A.min()       # Min of all elements
+A.mean()      # Mean of all elements
+np.nanmean(A) # Mean and ignore NaN values
 
 # print(f"ndim  : { A.ndim   } " )
 # print(f"shape : { A.shape  } " )
@@ -78,3 +79,5 @@ A_flatten = (A.reshape(A.shape[0], -1)).T
 
 np.squeeze(A) # remove redundant dimensions
 A.squeeze()
+
+

@@ -1,6 +1,7 @@
 import pandas as pd # Pandas = panel data
 import numpy as np
 import os
+import time
 
 # -------------------------------------------------------
 # SERIES : List of datapoints , containing : Data , Index
@@ -87,9 +88,9 @@ df = pd.DataFrame(list_of_dicts , index=["id_1","id_2","id_3"]) ; # print(df) # 
 
 # DataFrames : Masks / Parsing / Conditionals {{{
 
-print(df.shape) # tuple (rows, cols)
-print(len(df)) # num rows
-print(df.size) # rows * cols
+# print(df.shape) # tuple (rows, cols)
+# print(len(df)) # num rows
+# print(df.size) # rows * cols
 
 
 # print( df          > 5 )                     # Boolean Mask
@@ -169,27 +170,159 @@ df       = pd.read_csv(filename)
 
 # }}} DataFrames : Clean Data
 
-# DataFrames : Merging Data {{{
+# DataFrames : Merging Data / Joins {{{
 
 # Inner join = Intersection
-# Outer join =  Union
-# Left join
-# Right join
+# Outer join = Union
+# Left join  = Intersection + All in left
+# Right join = Intersection + All in right
 
 df2 = df1 = df # lines so that the following do not throw errors
-# print(df.columns)
-pd.merge(df1 , df2 , how="inner" , left_index = True , right_index=True) # intersection , left = df1 , right = df2 , index match
-pd.merge(df1 , df2 , how="outer" , left_index = True , right_index=True) # union        , left = df1 , right = df2 , index match
-pd.merge(df1 , df2 , how="right" , on=[ 'model' , 'year' ])                            # Join on given column
+
+pd.merge(df1 , df2 , how="inner" , left_index = True , right_index=True) # intersection              , left = df1 , right = df2 , index match
+pd.merge(df1 , df2 , how="outer" , left_index = True , right_index=True) # union                     , left = df1 , right = df2 , index match
+pd.merge(df1 , df2 , how="left"  , on = [ 'model' , 'year' ])            # Join on given column
+pd.merge(df1 , df2 , how="right" , on = [ 'model' , 'year' ])            # Join on given column
 pd.concat([df1,df2])
 
 # }}} DataFrames : Merging Data
 
+# DataFrames : Groups {{{
+
+# for group , frame in df.groupby("manufacturer"): print(group)
+# for group , frame in df.groupby("manufacturer"): print(frame)
+
+
+cols = [ "displ","year","cty" ]
+
+C = df.groupby("year");       # print(C)
+C = df[cols].groupby("year"); # print(C)
+
+
+# aggregate() : use when you have specific things you want to run for different columns , or multiple things on same col
+#             : return a single row for every unique entry
+# transform() : apply function to df
+#             : input df
+#             : return same shaped df
+# filter()    : apply a function to each group dataframe ,
+#             : returns True or False
+
+# apply() : apply a function to series = an axis of df
+
+# apply     : function elementwise     , return same shape
+# transform : function whole dataframe , fill in values by row values , return same shape
+# aggregate : function rows            , aggreagate condenses rows    , return new frame of aggregated unique rows
+
+
+def my_func(x): return x+1
+
+C = df["year"].aggregate ( my_func         , axis = 0 ) ; # print ( C )
+C = df["year"].transform ( my_func         , axis = 0 ) ; # print ( C )
+C = df["year"].transform ( lambda x: x + 1 , axis = 0 ) ; # print ( C )
+
+
+C = df.groupby("year").filter( lambda x: np.nanmean(x["year"]) > 2000 ); # print(C)
+
+# Get group , apply function to each member in group
+# C = df.groupby("year").apply( my_func );
+
 # apply function to evey element
-C = df.apply( np.sum , axis=0 , args=() ); # print (C)
+# axis = 0 : apply function to each column
+# axis = 1 : apply function to each row
+C = df.apply( np.sum , axis=0 , args=() );              # print (C) 
 C = df.apply( lambda x: np.max(df.columns) , axis = 0 ) # print(C)
 
+# }}} DataFrames : Groups
 
+# DataFrames : Pivot Tables {{{
+
+# pivot_table()
+# stack()
+# unstack()
+
+
+# }}} DataFrames : Pivot Tables
+
+# DataFrames : Timestamps {{{
+
+C = pd.Timestamp(time.ctime());                               # print (C) # Automatically set time
+C = pd.Timestamp(2022,6,16,0,0);                              # print (C) # Manually set time
+C = pd.Timestamp(time.ctime()).weekday();                     # print (C) # Which day of the week is it ?
+C = pd.Timestamp(time.ctime()) - pd.Timestamp(2022,6,16,0,0); # print (C) # Difference between times
+C = pd.Timestamp(time.ctime()) + pd.Timedelta("1D 3H");       # print (C) # Add time
+C = pd.Timestamp(time.ctime()) + pd.offsets.Week();           # print (C) # Add one week
+C = pd.Timestamp(time.ctime()) + pd.offsets.MonthEnd();       # print (C) # Add to months end
+
+# Can also do crazy stuff like business day , quarterly , etc ...
+
+
+
+C = pd.to_datetime(df["year"],dayfirst=True) # Automatically standardize various time formats for given column
+                                             # dayfirst = True  : normal style
+                                             # dayfirst = False : american style
+                                             # nonstandard e.gs : 1/1/20 , 1.1.20 , 1-1-20 , 1 Jan 20 , Jan 1, 20 , etc ...
+
+
+# }}} DataFrames : Timestamps
+
+# BASE IMPORT {{{
+
+# Def : clean_labels {{{
+
+
+def clean_labels(df):
+    """TODO: Cleans up dataframe column names
+        - remove trailing spaces
+        - make all values lowercase
+
+    :df : data frame object
+    :returns: DataFrame object with cleaned column values
+
+    """
+
+    df = df.rename(mapper = str.strip          , axis = 1) ; # Column Labels : Remove trailing whitespace
+    df = df.rename(mapper = lambda x:x.lower() , axis = 1) ; # Column Labels : Change all to uppercase
+
+    return df
+
+
+# }}}
+
+# Def : get_data {{{
+
+
+def df_read_relative(path):
+    """TODO: Reads in file from relative path to current file as pandas dataframe
+
+    path : string           , relative path to file
+    returns  : pandas dataframe , created from file data
+
+    """
+    dir_name  = os.path.dirname  ( __file__       )
+    file_name = os.path.join     ( dir_name, path )
+    file_type = os.path.splitext ( file_name      ) [1][1:]
+
+    if   ( file_type == "csv"  ) : df = pd.read_csv     ( file_name )
+    elif ( file_type == "txt"  ) : df = pd.read_csv     ( file_name )
+    elif ( file_type == "zip"  ) : df = pd.read_csv     ( file_name )
+    elif ( file_type == "xlsx" ) : df = pd.read_excel   ( file_name )
+    elif ( file_type == "json" ) : df = pd.read_json    ( file_name )
+    elif ( file_type == "html" ) : df = pd.read_html    ( file_name )
+    elif ( file_type == "pdf"  ) : df = tabula.read_pdf ( file_name )
+    else :
+        print("dont pass in garbage filetypes")
+
+    return df
+
+
+# }}}
+
+# if __name__ == '__main__':
+    # df = df_read_relative('../data/cwurData.csv')
+    # df = clean_labels(df)
+
+
+# }}} BASE IMPORT
 
 
 
