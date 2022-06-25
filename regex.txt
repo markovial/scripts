@@ -111,4 +111,22 @@ ASSERTIONS
 ----------
 
 
+USEFUL EXAMPLES
+---------------
 
+Split sentences : .*[^\n]
+
+
+Match everything inside parenthesis :     \(([^)]+)\)
+    \(    : match an opening parentheses
+    (     : begin capturing group
+    [^)]+ : match one or more non ) characters
+    )     : end capturing group
+    \)    : match closing parentheses
+
+/.+?(?=abc)/ : Match any characters as few as possible until a "abc" is found, without counting the "abc".
+
+^(?![\s\S]) : Match only empty string
+
+^[^\(]+ : Match until parenthesis
+[ \t]+$ : remove trailing whitespaces and tabs
