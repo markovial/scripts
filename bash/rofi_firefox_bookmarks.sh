@@ -1,8 +1,10 @@
-#!/usr/bin/env bash
-# https://github.com/milosz/rofi-firefox-bookmarks/blob/main/rofi_firefox_bookmarks.sh
-# 2 files - bookmarks , tree
-# rofi - search bookmarks
+# SOURCE : https://github.com/milosz/rofi-firefox-bookmarks/blob/main/rofi_firefox_bookmarks.sh
+# USAGE : rofi - search bookmarks
 # rofi -show firefox_bookmarks -modi "firefox_bookmarks:/path/to/rofi_firefox_bookmarks.sh"
+# 2 files - bookmarks , tree
+
+#!/usr/bin/env bash
+
 
 # places.sqlite location
 places_file="$(find ~/.mozilla/firefox/*.default*/ -name "places.sqlite" -print -quit)"

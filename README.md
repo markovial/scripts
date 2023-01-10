@@ -1,3 +1,10 @@
+# todo
+
+* clean up readme
+* make bookmarks dmenu/rofi script more general - read from just a .txt file
+* automate weekly + monthly backups
+* pihole config
+
 # scripts
 
 
