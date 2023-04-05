@@ -1,5 +1,10 @@
 # Readme
 
+## Scripts that I have to write at some point
+
+* Auto time zone converter based on NLP input
+
+## Description of Repo
 There are some random programs / scripts that I wrote just to practice working
 with a language. The main languages that I work with are:
 
