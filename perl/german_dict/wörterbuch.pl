@@ -11,7 +11,7 @@ use autodie;
 # by matthias.bloch at puffin dot ch
 
 # because the code is in German I wrote some comments in English :-)
-open (LISTE, "wb.txt") or die "can't load dictionary: $!";
+open (LISTE, "git/scripts/perl/german_dict/wb.txt") or die "can't load dictionary: $!";
 @woerterbuch= <LISTE>;
 close LISTE;
 
